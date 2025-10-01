@@ -1,9 +1,10 @@
 body {
     font-family: Arial, system-ui;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
     background-color: #f5f5f5;
+    line-height: 1.6;
 }
 
 .container {
@@ -11,22 +12,9 @@ body {
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    text-align: center;
 }
 
-h1 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 10px;
-}
-
-p {
-    text-align: center;
-    color: #555;
-    margin-top: 0;
-    margin-bottom: 30px;
-}
-
+/* Estilos del Index */
 .status-message {
     font-size: 24px;
     font-weight: bold;
@@ -119,4 +107,48 @@ p {
     font-size: 14px;
     text-align: justify;
     margin: 0;
+}
+
+/* ==========================================
+   HEADER Y NAVEGACIÓN
+   ========================================== */
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.nav-menu {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-menu a:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.nav-menu a.active {
+    background-color: rgba(255,255,255,0.3);
+    font-weight: bold;
 }
