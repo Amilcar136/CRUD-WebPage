@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for( 'static', filename='css/estilos.css' ) }}">
+    <title>Server 1</title>
+    <link type="image/png" sizes="16x16" rel="icon" href="app\images\iconvisual-studio-code.png">
+</head>
+<body>
+    <div class="container">
+        <h1>Estado de Conexión PostgreSQL</h1>
+        <nav class="nav-menu">
+                <a href="index.html">Inicio</a>
+                <a href="formulario.html" class="active">Productos</a>
+            </nav>
+
+
+        <div class="status-message {{ status_class }}">
+            {{ status_message}}
+        </div>
+
+        <button class="refres-btn" onclick="window.location.reload()">
+            Verificar conexión
+        </button>
+
+        <div class="info">
+            <h3> Informacion:</h3>
+            <p>Aplicacion que verifica la conexion con la base de datos</p>
+            <p>Haz click en "Verificar conexión" para actualizar el estado</p>
+        </div>
+
+        <div class="company-info">
+            <h2>Abarrotes Tecnológico</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🎯 Misión</h3>
+                    <p>Ofrecer productos de primera necesidad de calidad a precios justos para las familias de nuestra comunidad. Nos enfocamos en brindar un servicio cercano y confiable, asegurando que nuestros clientes encuentren todo lo que necesitan para su hogar en un ambiente familiar y acogedor.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>👁️ Visión</h3>
+                    <p>Ser la tienda de abarrotes de referencia en el barrio, reconocida por la frescura de nuestros productos, la amabilidad de nuestro trato y la confianza que generamos. Aspiramos a convertirnos en un punto de encuentro para la comunidad, donde cada visita sea una experiencia agradable.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🎯 Objetivos</h3>
+                    <p>Mantener un inventario completo y variado que cubra las necesidades diarias de nuestros clientes. Establecer relaciones duraderas basadas en la confianza y el buen servicio. Contribuir al crecimiento económico local y apoyar a las familias trabajadoras de nuestra zona.</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>💎 Valores</h3>
+                    <p>Honestidad en todos nuestros tratos comerciales, respeto hacia cada cliente sin distinción, responsabilidad con la calidad de los productos que ofrecemos, y compromiso genuino con el bienestar de nuestra comunidad. La familia y la tradición guían nuestras decisiones diarias.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
