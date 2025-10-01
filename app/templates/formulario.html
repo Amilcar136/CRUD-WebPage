@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Productos - Abarrotes Tecnológico</title>
     <link rel="stylesheet" href="https://raw.githubusercontent.com/Amilcar136/PWPag/refs/heads/master/app/static/css/form.css">
+    <link rel="stylesheet" href="estilos.css">
 <body>
     <div class="container">
-        <header>
-            <h1>Gestión de Productos 🛒</h1>
+        <header class="header">
+            <h1>Gestión de Productos </h1>
             <p>Formulario para altas, bajas y modificaciones de productos.</p>
+            <nav class="nav-menu">
+                <a href="index.html">Inicio</a>
+                <a href="productos.html" class="active">Productos</a>
+            </nav>
         </header>
 
-        <main>
+        <main class="main-content">
+            <h2>Gestion de productos</h2>
             <form action="/formulario" method="POST" class="product-form">
                 
                 <div class="form-group">
