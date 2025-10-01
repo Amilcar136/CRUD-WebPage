@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Baja de Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Amilcar136/PWPag@master/app/static/css/form.css">
+    <style>
+        .product-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .product-table th, .product-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .product-table th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <!--Mensajes-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="container">
+        <h1>Baja de Productos</h1>
+        <p>Selecciona el producto que deseas eliminar.</p>
+        <nav class="nav-menu">
+            <a href="{{ url_for( 'index' ) }}">Inicio</a>
+            <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
+            <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
+            <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
+        </nav>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>${{ "%.2f"|format(producto.precio) }}</td>
+                    <td>{{ producto.stock }}</td>
+                    <td>
+                        <form action="{{ url_for('baja_producto') }}" method="POST" style="margin:0;">
+                            <input type="hidden" name="product-id" value="{{ producto.id }}">
+                            <button type="submit" class="btn btn-danger">Dar de Baja</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

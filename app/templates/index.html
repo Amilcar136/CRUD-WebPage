@@ -12,8 +12,10 @@
         <header class="header">
             <h1>Estado de Conexión PostgreSQL</h1>
             <nav class="nav-menu">
-                    <a href="{{ url_for( 'index' ) }}" class="{{ 'active' if request.endpoint == 'index' else '' }}">Inicio</a>
-                    <a href="{{ url_for( 'form' ) }} " class="{{ 'active' if request.endpoint == 'form' else '' }}">Productos</a>
+                <a href="{{ url_for( 'index' ) }}">Inicio</a>
+                <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
+                <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
+                <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
             </nav>
         </header>
 

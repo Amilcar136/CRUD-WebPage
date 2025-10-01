@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualización de Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Amilcar136/PWPag@master/app/static/css/form.css">
+    <style>
+        .product-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .product-table th, .product-table td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle;}
+        .product-table th { background-color: #f2f2f2; }
+        .product-table input[type="text"], .product-table input[type="number"] { width: 95%; padding: 6px; }
+    </style>
+</head>
+<body>
+    <!--Mensajes-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="container">
+        <h1>Actualización de Productos 🔄</h1>
+        <p>Modifica los datos directamente en la tabla y guarda los cambios.</p>
+        <nav class="nav-menu">
+            <a href="{{ url_for( 'index' ) }}">Inicio</a>
+            <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
+            <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
+            <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
+        </nav>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <form action="{{ url_for('actualizar_producto') }}" method="POST">
+                        <input type="hidden" name="product-id" value="{{ producto.id }}">
+                        <td>{{ producto.id }}</td>
+                        <td><input type="text" name="product-name" value="{{ producto.nombre }}" required></td>
+                        <td><input type="number" name="product-price" value="{{ producto.precio }}" step="0.01" required></td>
+                        <td><input type="number" name="product-stock" value="{{ producto.stock }}" required></td>
+                        <td><button type="submit" class="btn btn-warning">Guardar</button></td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
