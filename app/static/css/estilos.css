@@ -36,15 +36,17 @@ body {
 }
 
 .refresh-btn {
-    background-color: #007bff;
+    font-weight: bold;
     color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 2rem;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
+    width: 150px;
+    height: 42px;
+    border: none;
+    background-color: #3653f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .refresh-btn:hover {

@@ -9,18 +9,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>Estado de Conexión PostgreSQL</h1>
-        <nav class="nav-menu">
-                <a href="index.html">Inicio</a>
-                <a href="formulario.html" class="active">Productos</a>
+        <header class="header">
+            <h1>Estado de Conexión PostgreSQL</h1>
+            <nav class="nav-menu">
+                    <a href="index.html" class="active">Inicio</a>
+                    <a href="formulario.html">Productos</a>
             </nav>
-
+        </header>
 
         <div class="status-message {{ status_class }}">
             {{ status_message}}
         </div>
 
-        <button class="refres-btn" onclick="window.location.reload()">
+        <button class="refresh-btn" onclick="window.location.reload()">
             Verificar conexión
         </button>
 
@@ -70,6 +71,6 @@
                 </a>
             </div>
         </footer>
-        
+
 </body>
 </html>
