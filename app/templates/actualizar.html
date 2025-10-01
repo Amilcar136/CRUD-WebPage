@@ -22,15 +22,15 @@
             </div>
         {% endif %}
     {% endwith %}
-    
+
     <div class="container">
         <h1>Actualización de Productos 🔄</h1>
         <p>Modifica los datos directamente en la tabla y guarda los cambios.</p>
         <nav class="nav-menu">
             <a href="{{ url_for( 'index' ) }}">Inicio</a>
-            <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
-            <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
-            <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
+            <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
+            <a href="{{ url_for( 'bajas_prod' ) }}">Baja de Productos</a>
+            <a href="{{ url_for( 'actualizar_prod' ) }}" class="active">Actualización de Productos</a>
         </nav>
         <table class="product-table">
             <thead>
@@ -45,7 +45,7 @@
             <tbody>
                 {% for producto in productos %}
                 <tr>
-                    <form action="{{ url_for('actualizar_producto') }}" method="POST">
+                    <form action="{{ url_for('actualizar_prod') }}" method="POST">
                         <input type="hidden" name="product-id" value="{{ producto.id }}">
                         <td>{{ producto.id }}</td>
                         <td><input type="text" name="product-name" value="{{ producto.nombre }}" required></td>

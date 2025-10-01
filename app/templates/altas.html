@@ -11,12 +11,12 @@
         <p>Completa los campos para añadir un nuevo artículo.</p>
         <nav class="nav-menu">
             <a href="{{ url_for( 'index' ) }}">Inicio</a>
-            <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
-            <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
-            <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
+            <a href="{{ url_for( 'altas_prod' ) }}" class="active">Alta de Productos</a>
+            <a href="{{ url_for( 'bajas_prod' ) }}">Baja de Productos</a>
+            <a href="{{ url_for( 'actualizar_prod' ) }}">Actualización de Productos</a>
         </nav>
 
-        <form action="{{ url_for('alta_producto') }}" method="POST" class="product-form">
+        <form action="{{ url_for('altas_prod') }}" method="POST" class="product-form">
             <div class="form-group">
                 <label for="product-name">Nombre del Producto:</label>
                 <input type="text" id="product-name" name="product-name" required>

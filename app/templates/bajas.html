@@ -21,15 +21,15 @@
             </div>
         {% endif %}
     {% endwith %}
-    
+
     <div class="container">
         <h1>Baja de Productos</h1>
         <p>Selecciona el producto que deseas eliminar.</p>
         <nav class="nav-menu">
             <a href="{{ url_for( 'index' ) }}">Inicio</a>
-            <a href="{{ url_for( 'altas' ) }}" class="active">Alta de Productos</a>
-            <a href="{{ url_for( 'bajas' ) }}">Baja de Productos</a>
-            <a href="{{ url_for( 'actualizar' ) }}" class="active">Actualización de Productos</a>
+            <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
+            <a href="{{ url_for( 'bajas_prod' ) }}" class="active">Baja de Productos</a>
+            <a href="{{ url_for( 'actualizar_prod' ) }}">Actualización de Productos</a>
         </nav>
         <table class="product-table">
             <thead>
@@ -49,7 +49,7 @@
                     <td>${{ "%.2f"|format(producto.precio) }}</td>
                     <td>{{ producto.stock }}</td>
                     <td>
-                        <form action="{{ url_for('baja_producto') }}" method="POST" style="margin:0;">
+                        <form action="{{ url_for('bajas_prod') }}" method="POST" style="margin:0;">
                             <input type="hidden" name="product-id" value="{{ producto.id }}">
                             <button type="submit" class="btn btn-danger">Dar de Baja</button>
                         </form>

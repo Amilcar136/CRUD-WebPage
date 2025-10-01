@@ -81,7 +81,7 @@ def status():
 
 #   ALTAS
 @app.route('/productos/alta', methods=['GET', 'POST'])
-def alta_producto():
+def altas_prod():
     if request.method == 'POST':
         # 1. Obtener datos del formulario
         nombre = request.form['product-name']
@@ -98,13 +98,13 @@ def alta_producto():
         conn.close()
         
         flash(f'Producto "{nombre}" añadido con éxito!', 'success')
-        return redirect(url_for('baja_producto'))
+        return redirect(url_for('bajas_prod'))
     
-    return render_template('alta_producto.html')
+    return render_template('altas.html')
 
 #   BAJAS
 @app.route('/productos/baja', methods=['GET', 'POST'])
-def baja_producto():
+def bajas_prod():
     conn, cursor = get_db_connection()
     if request.method == 'POST':
         product_id = int(request.form['product-id'])
@@ -113,7 +113,7 @@ def baja_producto():
         flash(f'Producto con ID {product_id} eliminado.', 'danger')
         cursor.close()
         conn.close()
-        return redirect(url_for('baja_producto'))
+        return redirect(url_for('bajas_prod'))
     
     # Para el método GET, obtenemos todos los productos
     cursor.execute("SELECT id, nombre, precio, stock FROM productos ORDER BY id")
@@ -124,11 +124,11 @@ def baja_producto():
     # Convertimos las tuplas a diccionarios para que la plantilla HTML funcione igual
     productos = [{'id': p[0], 'nombre': p[1], 'precio': p[2], 'stock': p[3]} for p in productos_tuplas]
     
-    return render_template('baja_producto.html', productos=productos)
+    return render_template('bajas.html', productos=productos)
 
 #   ACTUALIZAR
 @app.route('/productos/actualizar', methods=['GET', 'POST'])
-def actualizar_producto():
+def actualizar_prod():
     conn, cursor = get_db_connection()
     if request.method == 'POST':
         product_id = int(request.form['product-id'])
@@ -142,7 +142,7 @@ def actualizar_producto():
         flash(f'Producto "{nombre}" actualizado correctamente.', 'warning')
         cursor.close()
         conn.close()
-        return redirect(url_for('actualizar_producto'))
+        return redirect(url_for('actualizar_prod'))
         
     # Para el método GET, obtenemos todos los productos
     cursor.execute("SELECT id, nombre, precio, stock FROM productos ORDER BY id")
@@ -153,7 +153,7 @@ def actualizar_producto():
     # Convertimos las tuplas a diccionarios
     productos = [{'id': p[0], 'nombre': p[1], 'precio': p[2], 'stock': p[3]} for p in productos_tuplas]
     
-    return render_template('actualizar_producto.html', productos=productos)
+    return render_template('actualizar.html', productos=productos)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
