@@ -23,14 +23,17 @@
     {% endwith %}
 
     <div class="container">
-        <h1>Baja de Productos</h1>
-        <p>Selecciona el producto que deseas eliminar.</p>
-        <nav class="nav-menu">
-            <a href="{{ url_for( 'index' ) }}">Inicio</a>
-            <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
-            <a href="{{ url_for( 'bajas_prod' ) }}" class="active">Baja de Productos</a>
-            <a href="{{ url_for( 'actualizar_prod' ) }}">Actualización de Productos</a>
-        </nav>
+        <header class="header">
+            <h1>Bajas de Productos </h1>
+            <p>Selecciona el producto que deseas eliminar.</p>
+            <nav class="nav-menu">
+                <a href="{{ url_for( 'index' ) }}">Inicio</a>
+                <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
+                <a href="{{ url_for( 'bajas_prod' ) }}" class="active">Baja de Productos</a>
+                <a href="{{ url_for( 'actualizar_prod' ) }}">Actualización de Productos</a>
+            </nav>
+        </header>
+
         <table class="product-table">
             <thead>
                 <tr>

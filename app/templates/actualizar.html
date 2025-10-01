@@ -24,14 +24,16 @@
     {% endwith %}
 
     <div class="container">
-        <h1>Actualización de Productos 🔄</h1>
-        <p>Modifica los datos directamente en la tabla y guarda los cambios.</p>
-        <nav class="nav-menu">
-            <a href="{{ url_for( 'index' ) }}">Inicio</a>
-            <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
-            <a href="{{ url_for( 'bajas_prod' ) }}">Baja de Productos</a>
-            <a href="{{ url_for( 'actualizar_prod' ) }}" class="active">Actualización de Productos</a>
-        </nav>
+        <header class="header">
+            <h1>Actualizacion de Productos </h1>
+            <p>Modifica los datos directamente en la tabla y guarda los cambios</p>
+            <nav class="nav-menu">
+                <a href="{{ url_for( 'index' ) }}">Inicio</a>
+                <a href="{{ url_for( 'altas_prod' ) }}">Alta de Productos</a>
+                <a href="{{ url_for( 'bajas_prod' ) }}">Baja de Productos</a>
+                <a href="{{ url_for( 'actualizar_prod' ) }}" class="active">Actualización de Productos</a>
+            </nav>
+        </header>
         <table class="product-table">
             <thead>
                 <tr>
