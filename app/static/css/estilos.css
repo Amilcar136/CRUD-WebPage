@@ -36,22 +36,57 @@ body {
 }
 
 .refresh-btn {
-    font-weight: bold;
-    color: white;
-    border-radius: 2rem;
-    cursor: pointer;
-    width: 150px;
-    height: 42px;
-    border: none;
-    background-color: #3653f8;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    padding-block: 0.5rem;
+    padding-inline: 1.25rem;
+    background-color: rgb(0 107 179);
+    border-radius: 9999px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    color: #ffff;
+    gap: 10px;
+    font-weight: bold;
+    border: 3px solid #ffffff4d;
+    outline: none;
+    overflow: hidden;
+    font-size: 15px;
+    cursor: pointer;
 }
 
 .refresh-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
+    transform: scale(1.05);
+    border-color: #fff9;
+}
+
+.refresh-btn:hover::before {
+  animation: shine 1.5s ease-out infinite;
+}
+
+.refresh-btn::before {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  top: 0;
+  left: -100px;
+  opacity: 0.6;
+}
+
+@keyframes shine {
+  0% {
+    left: -100px;
+  }
+
+  60% {
+    left: 100%;
+  }
+
+  to {
+    left: 100%;
+  }
 }
 
 .info {

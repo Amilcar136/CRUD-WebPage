@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for( 'static', filename='css/estilos.css' ) }}">
     <title>Server 1</title>
-    <link type="image/png" sizes="16x16" rel="icon" href="app\images\iconvisual-studio-code.png">
+    <link rel="icon" type="image/png" href="{{ url_for( 'static', filename='iconvisual-studio-code.png' ) }}">
+    
 </head>
 <body>
     <div class="container">
@@ -64,12 +65,12 @@
             <div class="Validation-badges">
                 <a href="https://validator.w3.org/check?uri=referer" target="_blank">
                     <img src="https://www.w3.org/Icons/valid-html401" 
-                         alt="Valid HTML!" height="31" width="88">
+                         alt="Validar HTML" height="31" width="88">
                 </a>
 
                 <a href="https://jigsaw.w3.org/css-validator/check/referer" target="_blank">
                     <img src="https://jigsaw.w3.org/css-validator/images/vcss" 
-                         alt="Valid CSS!" height="31" width="88">
+                         alt="Validar CSS" height="31" width="88">
                 </a>
             </div>
         </footer>
