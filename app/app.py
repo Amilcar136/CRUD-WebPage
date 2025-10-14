@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
 import psycopg2
-import os
+import json
 
 app = Flask(__name__)
 app.secret_key = 'password1234'
@@ -146,6 +146,40 @@ def actualizar_prod():
     productos = [{'id': p[0], 'nombre': p[1], 'precio': p[2], 'stock': p[3]} for p in productos_tuplas]
     
     return render_template('actualizar.html', productos=productos)
+
+@app.route('/login', methods=['POST'])
+def login():
+    # Asumimos que los datos vienen como JSON del JavaScript
+    data = request.get_json() 
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({'success': False, 'message': 'Faltan credenciales.'}), 400
+
+    conn, cursor = None, None # Inicializar a None para el bloque finally
+    try:
+        conn, cursor = get_db_connection()
+        cursor.execute("SELECT id, email, password_hash FROM usuarios WHERE email = %s", (email,))
+        user_record = cursor.fetchone()
+
+        if user_record:
+            # Si encuentras el usuario y la contraseña coincide
+            if user_record[2] == password:
+                return jsonify({'success': True, 'message': 'Inicio de sesión exitoso!'})
+            else:
+                return jsonify({'success': False, 'message': 'Contraseña incorrecta.'}), 401
+        else:
+            return jsonify({'success': False, 'message': 'Usuario no encontrado.'}), 401
+
+    except Exception as e:
+        print(f"Error durante el login: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor.'}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
