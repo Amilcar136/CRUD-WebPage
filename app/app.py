@@ -3,6 +3,7 @@ import psycopg2
 import os
 
 app = Flask(__name__)
+app.secret_key = 'password1234'
 
 DB_CONFIG = {
     'host': 'localhost',
@@ -55,20 +56,11 @@ def index():
         conn, cursor = get_db_connection()
         cursor.close()
         conn.close()
-        is_connected = True
+        flash("Base de datos conectada correctamente", "success")
     except Exception as e:
-        print(f"Error de conexión: {e}")
-        is_connected = False
+        flash("No se pudo conectar a la base de datos", "error")
 
-    if is_connected:
-        status_message = "Base de datos conectada"
-        status_class = "success" # Corregido de 'sucess'
-    else:
-        status_message = "Base de datos desconectada"
-        status_class = "error"
-        
-    # Asegúrate de tener un index.html que pueda recibir estas variables
-    return render_template('index.html', status_message=status_message, status_class=status_class)
+    return render_template('index.html')
 
 @app.route('/status')
 def status():

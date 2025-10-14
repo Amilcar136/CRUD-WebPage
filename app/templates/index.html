@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ url_for( 'static', filename='css/estilos.css' ) }}">
     <title>Server 1</title>
     <link rel="icon" type="image/png" href="{{ url_for( 'static', filename='iconvisual-studio-code.png' ) }}">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
 </head>
 <body>
@@ -20,11 +24,7 @@
             </nav>
         </header>
 
-        <div class="status-message {{ status_class }}">
-            {{ status_message}}
-        </div>
-
-        <button class="refresh-btn" onclick="window.location.reload()">
+        <button class="refresh-btn" onclick="verifConn()">
             Verificar conexión
         </button>
 
@@ -75,5 +75,18 @@
             </div>
         </footer>
 
+    <script>
+      const flashMessages = [];
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            flashMessages.push({ category: '{{ category }}', text: '{{ message | safe }}' });
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
 </body>
 </html>
