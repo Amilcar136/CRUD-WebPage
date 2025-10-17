@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, url_for, redirect, flash, jsonify
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import psycopg2
-import json
+import re
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'password1234'
+CORS(app)
 
 DB_CONFIG = {
     'host': 'localhost',
@@ -14,172 +16,269 @@ DB_CONFIG = {
 }
 
 def get_db_connection():
-    """
-    Crea y retorna una conexión y un cursor a la base de datos.
-    """
+    """Crea y retorna una conexión y un cursor a la base de datos."""
     conn = psycopg2.connect(**DB_CONFIG)
     return conn, conn.cursor()
 
-def check_db_connection():
+def validar_email(email):
+    "Valida formato de email"
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
+
+def validar_password(password):
     """
-    Función para verificar el estado de la conexión a la base de datos
-    Retorna True si está conectada, False si no
+    Valida contraseña con:
+    -Minimo 8 caracteres, una mayuscula
+    -Una minuscula y un numero
     """
-    try:
-        # Intentar establecer conexión
-        connection = psycopg2.connect(
-            host=DB_CONFIG['host'],
-            database=DB_CONFIG['database'],
-            user=DB_CONFIG['user'],
-            password=DB_CONFIG['password'],
-            port=DB_CONFIG['port']
-        )
-        
-        # Crear cursor para ejecutar una consulta simple
-        cursor = connection.cursor()
-        cursor.execute('SELECT 1')
-        
-        # Cerrar cursor y conexión
-        cursor.close()
-        connection.close()
-        
-        return True
-        
-    except Exception as e:
-        print(f"Error de conexión: {e}")
-        return False
+    if len(password) < 8:
+        return False, "La contraseña debe tener al menos 8 caracteres"
+    if not re.search(r'[A-Z]', password):
+        return False, "Debe de contener al menos una mayúscula"
+    if not re.search(r'[a-z]', password):
+        return False, "Debe contener al menos una minúscula"
+    if not re.search(r'[0-9]', password):
+        return False, "Debe contener al menos un número"
+    return True, "Contraseña válida"
 
 #   Ruta principal
 @app.route('/')
 def index():
-    try:
-        conn, cursor = get_db_connection()
-        cursor.close()
-        conn.close()
-        flash("Base de datos conectada correctamente", "success")
-    except Exception as e:
-        flash("No se pudo conectar a la base de datos", "error")
-
+    "Renderiza aplicacion React"
     return render_template('index.html')
 
-@app.route('/status')
+@app.route('/api/status', methods = ['GET'])
 def status():
-    is_connected = check_db_connection()
-
-    return {
-        'connected' : is_connected,
-        'message' : 'Base de datos conectada' if is_connected else "Base de datos desconectada"
-    }
-
-#   ALTAS
-@app.route('/productos/alta', methods=['GET', 'POST'])
-def altas_prod():
-    if request.method == 'POST':
-        # 1. Obtener datos del formulario
-        nombre = request.form['product-name']
-        precio = float(request.form['product-price'])
-        stock = int(request.form['product-stock'])
-
-        # 2. Conectarse y ejecutar la consulta SQL
+    "Verifica estado de BD"
+    try:
         conn, cursor = get_db_connection()
-        # Se usa %s para prevenir inyección SQL
-        cursor.execute("INSERT INTO productos (nombre, precio, stock) VALUES (%s, %s, %s)", 
-                       (nombre, precio, stock))
-        conn.commit() # Confirma la transacción
+        cursor.execute('SELECT 1')
         cursor.close()
         conn.close()
-        
-        flash(f'Producto "{nombre}" añadido con éxito!', 'success')
-        return redirect(url_for('bajas_prod'))
+        return jsonify( {
+            'sucess' : True,
+            'connected' : True,
+            'message' : 'Base de datos conectada correctamente'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'sucess' : False,
+            'connected' : False,
+            'message' : f'Error de conexión: {str(e)}'
+        }), 500
+
+@app.route('/api/validar-email', methods = ['POST'])
+def validar_email_endpoint():
+    "Valida email en tiempo real"
+    data = request.get_json()
+    email = data.get('email', '')
+
+    is_valid = validar_email(email)
+    return jsonify({
+        'valid' : is_valid,
+        'message' : 'Email válido' if is_valid else 'Email inválido'
+    }), 200
+
+@app.route('/api/validate-password', methods=['POST'])
+def validate_password_endpoint():
+    """Valida la contraseña en tiempo real"""
+    data = request.get_json()
+    password = data.get('password', '')
     
-    return render_template('altas.html')
+    is_valid, message = validar_password(password)
+    return jsonify({
+        'valid': is_valid,
+        'message': message
+    }), 200
 
-#   BAJAS
-@app.route('/productos/baja', methods=['GET', 'POST'])
-def bajas_prod():
-    conn, cursor = get_db_connection()
-    if request.method == 'POST':
-        product_id = int(request.form['product-id'])
-        cursor.execute("DELETE FROM productos WHERE id = %s", (product_id,))
-        conn.commit()
-        flash(f'Producto con ID {product_id} eliminado.', 'danger')
-        cursor.close()
-        conn.close()
-        return redirect(url_for('bajas_prod'))
-    
-    # Para el método GET, obtenemos todos los productos
-    cursor.execute("SELECT id, nombre, precio, stock FROM productos ORDER BY id")
-    productos_tuplas = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    # Convertimos las tuplas a diccionarios para que la plantilla HTML funcione igual
-    productos = [{'id': p[0], 'nombre': p[1], 'precio': p[2], 'stock': p[3]} for p in productos_tuplas]
-    
-    return render_template('bajas.html', productos=productos)
-
-#   ACTUALIZAR
-@app.route('/productos/actualizar', methods=['GET', 'POST'])
-def actualizar_prod():
-    conn, cursor = get_db_connection()
-    if request.method == 'POST':
-        product_id = int(request.form['product-id'])
-        nombre = request.form['product-name']
-        precio = float(request.form['product-price'])
-        stock = int(request.form['product-stock'])
-        
-        cursor.execute("UPDATE productos SET nombre = %s, precio = %s, stock = %s WHERE id = %s",
-                       (nombre, precio, stock, product_id))
-        conn.commit()
-        flash(f'Producto "{nombre}" actualizado correctamente.', 'warning')
-        cursor.close()
-        conn.close()
-        return redirect(url_for('actualizar_prod'))
-        
-    # Para el método GET, obtenemos todos los productos
-    cursor.execute("SELECT id, nombre, precio, stock FROM productos ORDER BY id")
-    productos_tuplas = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    # Convertimos las tuplas a diccionarios
-    productos = [{'id': p[0], 'nombre': p[1], 'precio': p[2], 'stock': p[3]} for p in productos_tuplas]
-    
-    return render_template('actualizar.html', productos=productos)
-
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-    # Asumimos que los datos vienen como JSON del JavaScript
-    data = request.get_json() 
+    """Endpoint de autenticación"""
+    data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
     if not email or not password:
-        return jsonify({'success': False, 'message': 'Faltan credenciales.'}), 400
-
-    conn, cursor = None, None # Inicializar a None para el bloque finally
+        return jsonify({
+            'success': False,
+            'message': 'Faltan credenciales'
+        }), 400
+    
+    if not validar_email(email):
+        return jsonify({
+            'success': False,
+            'message': 'Formato de email inválido'
+        }), 400
+    conn, cursor = None, None
     try:
         conn, cursor = get_db_connection()
-        cursor.execute("SELECT id, email, password_hash FROM usuarios WHERE email = %s", (email,))
+        cursor.execute('SELECT id, email, password_hash FROM usuarios WHERE email = %s', (email))
         user_record = cursor.fetchone()
 
-        if user_record:
-            # Si encuentras el usuario y la contraseña coincide
-            if user_record[2] == password:
-                return jsonify({'success': True, 'message': 'Inicio de sesión exitoso!'})
-            else:
-                return jsonify({'success': False, 'message': 'Contraseña incorrecta.'}), 401
+        if user_record and user_record[2] == password:
+            return jsonify({
+                'success': True,
+                'message': 'Inicio de sesión exitoso',
+                'user': {
+                    'id': user_record[0],
+                    'email': user_record[1]
+                }
+            }), 200
         else:
-            return jsonify({'success': False, 'message': 'Usuario no encontrado.'}), 401
+            return jsonify({
+                'success': False,
+                'message': 'Credenciales incorrectas'
+            }), 401
 
     except Exception as e:
-        print(f"Error durante el login: {e}")
-        return jsonify({'success': False, 'message': 'Error interno del servidor.'}), 500
+        return jsonify({
+            'success': False,
+            'message': f'Error interno: {str(e)}'
+        }), 500
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
 
+#PRODUCTOS
+@app.route('/api/productos', methods=['GET'])
+def get_productos():
+    """Obtiene todos los productos"""
+    try:
+        conn, cursor = get_db_connection()
+        cursor.execute("SELECT id, nombre, precio, stock FROM productos ORDER BY id")
+        productos_tuplas = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        productos = [
+            {
+                'id': p[0],
+                'nombre': p[1],
+                'precio': float(p[2]),
+                'stock': p[3]
+            }
+            for p in productos_tuplas
+        ]
+
+        return jsonify({
+            'success': True,
+            'productos': productos
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error al obtener productos: {str(e)}'
+        }), 500
+
+@app.route('/api/productos', methods=['POST'])
+def crear_producto():
+    """Crea un nuevo producto"""
+    data = request.get_json()
+    nombre = data.get('nombre')
+    precio = data.get('precio')
+    stock = data.get('stock')
+
+    if not all([nombre, precio is not None, stock is not None]):
+        return jsonify({
+            'success': False,
+            'message': 'Faltan datos requeridos'
+        }), 400
+
+    try:
+        conn, cursor = get_db_connection()
+        cursor.execute(
+            "INSERT INTO productos (nombre, precio, stock) VALUES (%s, %s, %s) RETURNING id",
+            (nombre, float(precio), int(stock))
+        )
+        nuevo_id = cursor.fetchone()[0]
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'message': f'Producto "{nombre}" creado exitosamente',
+            'id': nuevo_id
+        }), 201
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error al crear producto: {str(e)}'
+        }), 500
+
+@app.route('/api/productos/<int:producto_id>', methods=['PUT'])
+def actualizar_producto(producto_id):
+    """Actualiza un producto existente"""
+    data = request.get_json()
+    nombre = data.get('nombre')
+    precio = data.get('precio')
+    stock = data.get('stock')
+
+    if not all([nombre, precio is not None, stock is not None]):
+        return jsonify({
+            'success': False,
+            'message': 'Faltan datos requeridos'
+        }), 400
+
+    try:
+        conn, cursor = get_db_connection()
+        cursor.execute(
+            "UPDATE productos SET nombre = %s, precio = %s, stock = %s WHERE id = %s",
+            (nombre, float(precio), int(stock), producto_id)
+        )
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            cursor.close()
+            conn.close()
+            return jsonify({
+                'success': False,
+                'message': 'Producto no encontrado'
+            }), 404
+        
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'message': f'Producto "{nombre}" actualizado exitosamente'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error al actualizar producto: {str(e)}'
+        }), 500
+
+@app.route('/api/productos/<int:producto_id>', methods=['DELETE'])
+def eliminar_producto(producto_id):
+    """Elimina un producto"""
+    try:
+        conn, cursor = get_db_connection()
+        cursor.execute("DELETE FROM productos WHERE id = %s", (producto_id,))
+        conn.commit()
+        
+        if cursor.rowcount == 0:
+            cursor.close()
+            conn.close()
+            return jsonify({
+                'success': False,
+                'message': 'Producto no encontrado'
+            }), 404
+        
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            'success': True,
+            'message': f'Producto con ID {producto_id} eliminado exitosamente'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error al eliminar producto: {str(e)}'
+        }), 500
+    
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
