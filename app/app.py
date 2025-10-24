@@ -27,6 +27,18 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
+@app.route('/altas.html')
+def altas():
+    return render_template('altas.html')
+
+@app.route('/bajas.html')
+def bajas():
+    return render_template('bajas.html')
+
+@app.route('/editar.html')
+def editar():
+    return render_template('editar.html')
+
 #Login
 @app.route('/login', methods= ['GET', 'POST'])
 def login():
@@ -46,6 +58,7 @@ def login():
             session['user_id'] = user['id']
             return jsonify( { 'sucess': True, 'message': 'Login exitoso!' })
         return jsonify( { 'sucess': False, 'message': 'Credenciales incorrectas'}), 401
+    
     return render_template('login.html')
 
 #Validacion del formulario
