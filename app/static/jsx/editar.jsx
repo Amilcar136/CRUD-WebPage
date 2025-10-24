@@ -104,112 +104,6 @@ const Editar = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="nombre">import React, { useState, useEffect } from 'react';
-
-const Editar = () => {
-    const [productos, setProductos] = useState([]);
-    const [productoEditando, setProductoEditando] = useState(null);
-    const [formData, setFormData] = useState({
-        nombre: '',
-        precio: '',
-        cantidad: '',
-        categoria: ''
-    });
-
-    useEffect(() => {
-        cargarProductos();
-    }, []);
-
-    const cargarProductos = async () => {
-        try {
-            const response = await fetch('/productos');
-            const data = await response.json();
-            setProductos(data);
-        } catch (error) {
-            console.error('Error al cargar productos:', error);
-        }
-    };
-
-    const seleccionarProducto = (producto) => {
-        setProductoEditando(producto.id);
-        setFormData({
-            nombre: producto.nombre,
-            precio: producto.precio,
-            cantidad: producto.cantidad,
-            categoria: producto.categoria
-        });
-    };
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await fetch(`/productos/${productoEditando}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert('Producto actualizado exitosamente');
-                setProductoEditando(null);
-                setFormData({
-                    nombre: '',
-                    precio: '',
-                    cantidad: '',
-                    categoria: ''
-                });
-                cargarProductos();
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Error al actualizar producto');
-        }
-    };
-
-    const cancelarEdicion = () => {
-        setProductoEditando(null);
-        setFormData({
-            nombre: '',
-            precio: '',
-            cantidad: '',
-            categoria: ''
-        });
-    };
-
-    return (
-        <div>
-            <nav className="navbar">
-                <div className="nav-container">
-                    <div className="nav-brand">Abarrotera Tecnológico</div>
-                    <ul className="nav-menu">
-                        <li><a href="/">Inicio</a></li>
-                        <li><a href="/altas.html">Altas</a></li>
-                        <li><a href="/bajas.html">Bajas</a></li>
-                        <li><a href="/editar.html">Editar</a></li>
-                        <li><a href="/login" className="login-btn">Login</a></li>
-                    </ul>
-                </div>
-            </nav>
-
-            <div className="crud-container">
-                {productoEditando ? (
-                    <form className="crud-form" onSubmit={handleSubmit}>
-                        <h2>Editar Producto</h2>
-
-                        <div className="form-row">
-                            <div className="form-group">
                                 <label htmlFor="nombre">Nombre del Producto</label>
                                 <input
                                     type="text"
@@ -330,4 +224,6 @@ const Editar = () => {
     );
 };
 
-export default Editar;
+// Renderizar el componente
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Editar />);

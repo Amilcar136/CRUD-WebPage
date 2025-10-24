@@ -84,7 +84,7 @@ def validar_password():
 
 @app.route('/productos', methods= ['GET', 'POST'])
 def productos():
-    if request.methods == 'POST':
+    if request.method == 'POST':
         data = request.get_json()
         conn = get_db_connection()
         cur = conn.cursor()
