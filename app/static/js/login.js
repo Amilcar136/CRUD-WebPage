@@ -1,6 +1,6 @@
 //Validacion tiempo real
 const emailInput = document.getElementById('email');
-const passwordInput = document-getElementById('password');
+const passwordInput = document.getElementById('password');
 const emailIcon = document.getElementById('emailIcon');
 const passwordIcon = document.getElementById('passwordIcon');
 const loginForm = document.getElementById('loginForm');
